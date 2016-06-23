@@ -15,4 +15,5 @@
 	font-size: 4vh;
 	transition: 1s;
 	background: rgb(240,240,240);
+	cursor: pointer;
 }
