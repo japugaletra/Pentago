@@ -9,6 +9,9 @@ var mainMenu;
 var gameContainer;
 
 ///		OBJECTS
+/*
+	Next step: Do Rotation buttons. assign method + link to game object
+*/
 function Game(divId) {
 	this.div = document.getElementById(divId);
 	this.started = false;
@@ -100,6 +103,16 @@ function Game(divId) {
 		}
 	}
 
+
+	this.UpdateQuadrantHoles = function(quadrant, newCursor) {
+		for (var row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (var column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				var hole = document.getElementById("h" + quadrant.toString() + row.toString() + column.toString());
+				hole.style.cursor = newCursor;
+			}
+		}
+
+	}
 	this.ChangeQuadrantCursor = function(cursor) {
 		var quadrantElements = document.querySelectorAll(".gameQuadrant");
 		for (var i = 0; i < quadrantElements.length; i++) {
@@ -118,9 +131,14 @@ function Game(divId) {
 			YTranslate = '-15%';
 		}
 		document.getElementById("quad" + quadrant).style.transform = "translate(" + XTranslate + "," + YTranslate + ")";
+		document.getElementById("quad" + quadrant).style.cursor = "default";
+		this.UpdateQuadrantHoles(quadrant,"default");
+
 		for(var i = 1; i < 4; i++) {
 			var otherQuadrant = (this.selectedQuadrant + i) % 4;
 			document.getElementById("quad" + otherQuadrant).style.transform = "translate(0%,0%)";
+			document.getElementById("quad" + otherQuadrant).style.cursor = "Pointer";
+			this.UpdateQuadrantHoles(otherQuadrant,"Pointer");
 		}
 		this.StartTransitionStage("Rotation", "select a direction");
 		this.ShowRotationButtons();
