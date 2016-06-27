@@ -1,0 +1,82 @@
+#gameBoardContainer {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+
+#gameBoardContainer .gameText {
+	position: absolute;
+	width: 100%;
+	transition: 0.5s;
+}
+
+#gameBoardContainer #turnInfo {
+	top: 2vmin;
+	font-size: 4vmin;
+}
+
+#gameBoardContainer #gameInstructions {
+	bottom: 0;
+	padding-bottom: 2.5vmin;
+	font-size: 3vmin;
+	color: grey;
+}
+
+#gameBoardContainer #gameBoard {
+	position: absolute;
+	width: 75%;
+	height: 75%;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	background: lightgrey;
+	line-height: 50%;
+}
+
+#gameBoard .gameQuadrant {
+	display: inline-block;
+	position: relative;
+	width: 45%;
+	height: 45%;
+	margin: 1.5% 1.5%;
+	padding: 1% 1%;
+	background: red;
+	line-height: 33%;
+	transform: translate(0%,0%);
+	transition: 0.5s;
+}
+
+.gameQuadrant .hole {
+	display: inline-block;
+	position: relative;
+	width: 27.33%;
+	height: 27.33%;
+	margin: 3% 3%;
+	background: rgb(175,0,0);
+	border-radius: 100%;
+	cursor: pointer;
+}
+
+#gameBoardContainer .rotationArrow {
+	position: absolute;
+	bottom: 2vmin;
+	width: 5vmin;
+	height: 5vmin;
+	border: 1px solid lightgrey;
+	opacity: 0;
+	transition: 0.5s;
+	display: none;
+}
+
+#gameBoardContainer #anticlockwiseArrow {
+	left: -1px;
+	background-image: url("../img/anticlockwise.png");
+	background-size: 100% 100%;
+}
+
+#gameBoardContainer #clockwiseArrow {
+	right: -1px;
+	background-image: url("../img/clockwise.png");
+	background-size: 100% 100%;
+}
