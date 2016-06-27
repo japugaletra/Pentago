@@ -66,10 +66,7 @@
 	border: 1px solid lightgrey;
 	opacity: 0;
 	transition: 0.5s;
-}
-
-#gameBoardContainer .rotationArrow:hover {
-	background: lightgrey;
+	display: none;
 }
 
 #gameBoardContainer #anticlockwiseArrow {
