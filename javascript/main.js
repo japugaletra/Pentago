@@ -89,7 +89,7 @@ function Game(divId) {
 		this.SwapPlayers();
 		this.GoToPlacement();
 		this.UI.RotateQuadrantClockwise(quadrantToRotate);
-		this.StartTransitionStage("Placement","select a peg");
+		this.UI.HideRotationButtons();
 		setTimeout(function() {
 			game.MoveHolesInQuadrantClockwise(quadrantToRotate);
 			game.UI.ResetQuadrantDisplay(quadrantToRotate);
@@ -99,11 +99,39 @@ function Game(divId) {
 
 	this.MoveHolesInQuadrantClockwise = function(quadrant) {
 		var originalHoles = this.holes[quadrant];
+		this.holes[quadrant] = new Array();
 		for (var row = 0; row < NUMBER_OF_ROWS; row++) {
+			this.holes[quadrant][row] = new Array();
 			for (var column = 0; column < NUMBER_OF_COLUMNS; column++) {
-				var newRow = column;
-				var newColumn = (NUMBER_OF_COLUMNS - 1) - row;
-				this.holes[quadrant][newRow][newColumn] = originalHoles[row][column];
+				var oldRow = (NUMBER_OF_ROWS - 1) - column;
+				var oldColumn = row;
+				this.holes[quadrant][row][column] = originalHoles[oldRow][oldColumn];
+			}
+		}
+	}
+
+	this.RotateCurrentQuadrantAnticlockwise = function() {
+		var quadrantToRotate = this.selectedQuadrant;
+		this.SwapPlayers();
+		this.GoToPlacement();
+		this.UI.RotateQuadrantAnticlockwise(quadrantToRotate);
+		this.UI.HideRotationButtons();
+		setTimeout(function() {
+			game.MoveHolesInQuadrantAnticlockwise(quadrantToRotate);
+			game.UI.ResetQuadrantDisplay(quadrantToRotate);
+		},1000);
+		this.selectedQuadrant = null;
+	}
+
+	this.MoveHolesInQuadrantAnticlockwise = function(quadrant) {
+		var originalHoles = this.holes[quadrant];
+		this.holes[quadrant] = new Array();
+		for (var row = 0; row < NUMBER_OF_ROWS; row++) {
+			this.holes[quadrant][row] = new Array();
+			for (var column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				var oldRow = column;
+				var oldColumn = (NUMBER_OF_COLUMNS - 1) - row;
+				this.holes[quadrant][row][column] = originalHoles[oldRow][oldColumn];
 			}
 		}
 	}
@@ -120,10 +148,27 @@ function GameUIManager() {
 
 	this.ResetQuadrantDisplay = function(quadrant) {
 		var quadrantElement = document.getElementById("quad" + quadrant);
-		quadrantElement.style.transition = "0s";
-		quadrantElement.style.tranform = "";
-		quadrantElement.style.transition = "0.5s";
 
+		quadrantElement.style.transition = "0s";
+		quadrantElement.style.transform = "translate(0%,0%)";
+		setTimeout(function(){
+			var quadrantElement = document.getElementById("quad" + quadrant);
+			quadrantElement.style.transition = "0.5s";
+		},500);
+
+		for (var row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (var column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				var currentHoleElement = document.getElementById("h" + quadrant.toString() + row.toString() + column.toString());
+				var currentHole = game.holes[quadrant][row][column];
+				if(currentHole.played) {
+					currentHoleElement.style.background = currentHole.owner.color.toRGB();
+				} else {
+					currentHoleElement.style.background = EMPTY_HOLE_RED_RGB;
+				}
+			}
+		}
+		
+		this.currentTransform = null;
 
 	}
 
@@ -186,6 +231,21 @@ function GameUIManager() {
 		},500);
 	}
 
+	this.HideRotationButtons = function() {
+		var rotationButtons = document.querySelectorAll(".rotationArrow");
+		for (var i = 0; i < rotationButtons.length; i++) {
+			rotationButtons[i].style.opacity = 0;
+			rotationButtons[i].style.cursor = "pointer";
+		}
+
+		setTimeout(function() {
+			var rotationButtons = document.querySelectorAll(".rotationArrow");
+			for (var i = 0; i < rotationButtons.length; i++) {
+				rotationButtons[i].style.display = "none";
+			}
+		},500);
+	}
+
 	this.PullOutQuadrant = function(quadrant) {
 		var XTranslate = '15%';
 		var YTranslate = '15%';
@@ -223,6 +283,14 @@ function GameUIManager() {
 	this.TiltQuadrantAnticlockwise = function(quadrant) {
 		var chosenQuadrant = document.getElementById("quad" + quadrant);
 		chosenQuadrant.style.transform += " rotate(-15deg)";
+	}
+
+	this.RotateQuadrantAnticlockwise = function(quadrant) {
+		var chosenQuadrant = document.getElementById("quad" + quadrant);
+		chosenQuadrant.style.transform = this.currentTransform + " rotate(-90deg)";
+		setTimeout(function() {
+			chosenQuadrant.style.transform = "rotate(-90deg)";
+		},500);
 	}
 
 	this.UntiltQuadrant = function(quadrant) {
@@ -430,7 +498,7 @@ function RotationOnClick() {
 		if(this.id == "clockwiseArrow") {
 			game.RotateCurrentQuadrantClockwise();
 		} else {
-			game.RotateCurrentQuadrantAntilockwise();
+			game.RotateCurrentQuadrantAnticlockwise();
 		}
 	}
 }

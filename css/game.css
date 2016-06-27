@@ -43,8 +43,8 @@
 	padding: 1% 1%;
 	background: red;
 	line-height: 33%;
-	transition: 0.5s;
 	transform: translate(0%,0%);
+	transition: 0.5s;
 }
 
 .gameQuadrant .hole {
